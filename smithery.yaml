@@ -1,0 +1,12 @@
+startCommand:
+  type: stdio
+configSchema:
+  type: object
+  properties: {}
+commandFunction: |-
+  (config) => ({
+    command: 'node',
+    args: ['./dist/src/index.js'],
+    env: {}
+  })
+exampleConfig: {}
