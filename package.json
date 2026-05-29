@@ -1,6 +1,7 @@
 {
   "name": "clarik",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "mcpName": "io.github.Mikerichardmail/clarik-mcp-server",
   "description": "Clarity and memory for Claude. One install.",
   "type": "module",
   "main": "dist/src/index.js",
@@ -29,8 +30,11 @@
     "model-context-protocol",
     "llm"
   ],
-  "author": "",
-  "repository": "",
+  "author": "Mikerichardmail",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mikerichardmail/clarik-mcp-server.git"
+  },
   "homepage": "https://clarik.dev",
   "license": "MIT",
   "dependencies": {
