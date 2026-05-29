@@ -12,7 +12,7 @@
 
 Memory that persists · Context that stays lean · Sessions that never die
 
-[Get Started](#-quick-start) · [All 20 Tools](#-all-20-tools) · [How It Saves You Money](#-token-savings) · [Go Pro](https://clarik.dev/pro)
+[Get Started](#-quick-start) · [All 20 Tools](#-all-20-tools) · [How It Saves You Money](#-token-savings) · [Go Pro](https://adshieldpro.gumroad.com/l/ClaricRPCFramework)
 
 </div>
 
@@ -123,7 +123,7 @@ Pays for itself in 8 days.
 | **Pro Monthly** | $8/mo | All 20 tools. Cancel anytime. |
 
 <p align="center">
-  <a href="https://clarik.dev/pro"><strong>→ Get Clarik Pro</strong></a>
+  <a href="https://adshieldpro.gumroad.com/l/ClaricRPCFramework"><strong>→ Get Clarik Pro</strong></a>
 </p>
 
 Already have a key?
@@ -318,6 +318,6 @@ Full terms: [https://clarik.dev/terms](https://clarik.dev/terms)
 
 **Built for developers who use Claude every day.**
 
-[Get Started](https://npmjs.com/package/clarik) · [Go Pro](https://clarik.dev/pro) · [Report Issues](https://github.com/clarik-dev/clarik/issues)
+[Get Started](https://npmjs.com/package/clarik) · [Go Pro](https://adshieldpro.gumroad.com/l/ClaricRPCFramework) · [Report Issues](https://github.com/clarik-dev/clarik/issues)
 
 </div>

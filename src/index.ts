@@ -82,7 +82,7 @@ async function checkProAccess(toolName: string): Promise<Record<string, unknown>
       text: [
         `⚡ ${toolName} is a Pro feature.`,
         '',
-        '   Unlock all 20 tools → https://clarik.dev/pro ($20 lifetime)',
+        '   Unlock all 20 tools → https://adshieldpro.gumroad.com/l/ClaricRPCFramework ($20 lifetime)',
         '   Activate your key  → npx clarik activate YOUR-KEY',
         '',
         '   (Free tier includes 8 tools — no key needed)',

@@ -40,7 +40,7 @@ const SAVINGS_INFO = `
      Clarik Pro ($20 lifetime) pays for
      itself in under 8 days of API usage.
 
-     Unlock all 20 tools → https://clarik.dev/pro`;
+     Unlock all 20 tools → https://adshieldpro.gumroad.com/l/ClaricRPCFramework`;
 
 // ─── Install Logic ───
 

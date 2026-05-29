@@ -21,7 +21,7 @@ async function main(): Promise<void> {
       const key = args[1];
       if (!key) {
         console.log('Usage: npx clarik activate YOUR-KEY');
-        console.log('Get your key at: https://clarik.dev/pro');
+        console.log('Get your key at: https://adshieldpro.gumroad.com/l/ClaricRPCFramework');
         process.exit(1);
       }
       const { validateLicense } = await import('./src/license/validate.js');
@@ -34,7 +34,7 @@ async function main(): Promise<void> {
       } else {
         console.log('');
         console.log('❌ Invalid license key.');
-        console.log('   Get a valid key at: https://clarik.dev/pro');
+        console.log('   Get a valid key at: https://adshieldpro.gumroad.com/l/ClaricRPCFramework');
         console.log('');
       }
       break;
@@ -61,14 +61,14 @@ async function main(): Promise<void> {
       console.log('     You save:       ~$47–73/month');
       console.log('');
       if (status.tier === 'free') {
-        console.log('  Unlock all 20 tools → https://clarik.dev/pro');
+        console.log('  Unlock all 20 tools → https://adshieldpro.gumroad.com/l/ClaricRPCFramework');
         console.log('');
       }
       break;
     }
 
     case 'upgrade': {
-      const url = 'https://clarik.dev/pro';
+      const url = 'https://adshieldpro.gumroad.com/l/ClaricRPCFramework';
       console.log(`Opening ${url} ...`);
       const { exec } = await import('node:child_process');
       const platform = process.platform;

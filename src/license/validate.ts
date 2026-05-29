@@ -13,7 +13,7 @@ import {
 import { checkGracePeriod, updateGraceExpiry } from './grace.js';
 
 const GUMROAD_VERIFY_URL = 'https://api.gumroad.com/v2/licenses/verify';
-const GUMROAD_PRODUCT_ID = process.env.CLARIK_GUMROAD_PRODUCT_ID || 'xFe-HDqQwYBZBS9vX1z9sA==';
+const GUMROAD_PRODUCT_ID = process.env.CLARIK_GUMROAD_PRODUCT_ID || 'ClaricRPCFramework';
 const CACHE_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 const DEFAULT_CACHE: LicenseCache = {
