@@ -9,7 +9,7 @@ import { RepoGuardResult } from '../types.js';
 /** Protected path patterns — glob-like matching */
 const PROTECTED_PATTERNS: Array<{ pattern: RegExp; description: string }> = [
   {
-    pattern: /[/\\]migrations[/\\]/i,
+    pattern: /(?:^|[/\\])migrations[/\\]/i,
     description: 'Database migration file — changes may affect production data',
   },
   {
@@ -21,7 +21,7 @@ const PROTECTED_PATTERNS: Array<{ pattern: RegExp; description: string }> = [
     description: 'File appears to contain secrets or sensitive data',
   },
   {
-    pattern: /[/\\]\.github[/\\]workflows[/\\]/i,
+    pattern: /(?:^|[/\\])\.github[/\\]workflows[/\\]/i,
     description: 'CI/CD workflow — changes may affect deployment pipeline',
   },
   {
@@ -41,7 +41,7 @@ const PROTECTED_PATTERNS: Array<{ pattern: RegExp; description: string }> = [
     description: 'Production Dockerfile — changes may affect live services',
   },
   {
-    pattern: /[/\\]?\.pem$|[/\\]?\.key$|[/\\]?\.cert$/i,
+    pattern: /[/\\]?\.pem$|[/\\]?\.key$|[/\\]?\.cert$|[/\\]?\.crt$/i,
     description: 'Certificate or key file — contains sensitive cryptographic material',
   },
   {

@@ -213,23 +213,25 @@ export async function recallMemories(
     );
 
     // Score all facts
-    const ranked: RankedMemory[] = allFacts.map((fact) => {
-      const relevance = calculateRelevance(queryTokens, fact, queryCategoryBoost);
-      const recency = calculateRecency(fact.lastUsed);
-      const importance = calculateImportance(
-        fact.timesReferenced,
-        maxReferences,
-      );
+    const ranked: RankedMemory[] = allFacts
+      .map((fact) => {
+        const relevance = calculateRelevance(queryTokens, fact, queryCategoryBoost);
+        const recency = calculateRecency(fact.lastUsed);
+        const importance = calculateImportance(
+          fact.timesReferenced,
+          maxReferences,
+        );
 
-      const score =
-        relevance * 0.5 + recency * 0.3 + importance * 0.2;
+        const score =
+          relevance * 0.5 + recency * 0.3 + importance * 0.2;
 
-      return {
-        fact,
-        score,
-        breakdown: { relevance, recency, importance },
-      };
-    });
+        return {
+          fact,
+          score,
+          breakdown: { relevance, recency, importance },
+        };
+      })
+      .filter((rm) => rm.breakdown.relevance > 0);
 
     // Sort by score descending and take top results
     ranked.sort((a, b) => b.score - a.score);

@@ -12,7 +12,7 @@
     "dev": "tsc --watch",
     "start": "node dist/src/index.js",
     "prepublishOnly": "npm run build",
-    "test": "node --experimental-vm-modules node_modules/.bin/jest"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "files": [
     "dist/",
@@ -39,7 +39,10 @@
     "zod": "^3.23.0"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "@types/node": "^20.14.0",
+    "jest": "^30.4.2",
+    "ts-jest": "^29.4.11",
     "typescript": "^5.5.0"
   },
   "engines": {
