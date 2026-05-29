@@ -34,6 +34,7 @@
   "homepage": "https://clarik.dev",
   "license": "MIT",
   "dependencies": {
+    "@anthropic-ai/tokenizer": "^0.0.4",
     "@modelcontextprotocol/sdk": "^1.12.0",
     "zod": "^3.23.0"
   },

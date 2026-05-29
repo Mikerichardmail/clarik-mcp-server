@@ -1,26 +1,25 @@
 // ─── Clarik Token Estimation ───
 // Local token estimation without external API calls.
-// Uses character-based heuristic: ~1 token per 4 characters for English text.
-// Includes a 1.1x safety multiplier to avoid budget overruns.
+// Uses @anthropic-ai/tokenizer for true Anthropic-native token counting.
 
-const CHARS_PER_TOKEN = 4;
-const SAFETY_MULTIPLIER = 1.1;
+import { countTokens } from '@anthropic-ai/tokenizer';
 
 /**
  * Estimate the number of tokens in a text string.
- * Uses character-based estimation: ~1 token per 4 characters.
- * Applies a 1.1x safety multiplier to stay within budget.
+ * Uses @anthropic-ai/tokenizer for precise token counting.
  */
 export function estimateTokens(text: string): number {
   try {
     if (!text || text.length === 0) {
       return 0;
     }
-    const rawEstimate = Math.ceil(text.length / CHARS_PER_TOKEN);
-    return Math.ceil(rawEstimate * SAFETY_MULTIPLIER);
-  } catch {
-    // Fallback: return a safe high estimate
-    return Math.ceil((text?.length ?? 0) / CHARS_PER_TOKEN * SAFETY_MULTIPLIER);
+    return countTokens(text);
+  } catch (error) {
+    // Fallback: return a safe character-based estimate in case of error
+    console.error('[clarik] Tokenizer error, falling back to heuristic:', error);
+    const CHARS_PER_TOKEN = 4;
+    const SAFETY_MULTIPLIER = 1.1;
+    return Math.ceil(((text?.length ?? 0) / CHARS_PER_TOKEN) * SAFETY_MULTIPLIER);
   }
 }
 
