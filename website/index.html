@@ -1,0 +1,1686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clarik — Clarity and memory for Claude. One-command install.</title>
+  <meta name="description" content="Double Claude's memory and slash your API costs by 70% with Clarik. The zero-telemetry local MCP server that handles context trimming, ranked recall, and repo shielding.">
+  <meta name="keywords" content="Claude, MCP, Model Context Protocol, AI, developer tools, token savings, context trimmer, local memory">
+  
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── Modern CSS Design System ─── */
+    :root {
+      --bg-base: #030712;
+      --bg-surface: rgba(17, 24, 39, 0.7);
+      --bg-surface-hover: rgba(31, 41, 55, 0.8);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-color-glow: rgba(139, 92, 246, 0.4);
+      
+      --color-text-primary: #f3f4f6;
+      --color-text-secondary: #9ca3af;
+      --color-text-muted: #6b7280;
+      
+      --primary: #8b5cf6;
+      --primary-glow: rgba(139, 92, 246, 0.25);
+      --secondary: #3b82f6;
+      --secondary-glow: rgba(59, 130, 246, 0.25);
+      --accent: #06b6d4;
+      --accent-glow: rgba(6, 182, 212, 0.25);
+      
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      
+      --font-heading: 'Outfit', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+      
+      --max-width: 1200px;
+      --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Reset & Base Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-base);
+    }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--color-text-primary);
+      background-color: var(--bg-base);
+      line-height: 1.6;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Ambient Background Glows */
+    body::before {
+      content: '';
+      position: absolute;
+      top: -10%;
+      left: 10%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+      filter: blur(100px);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    body::after {
+      content: '';
+      position: absolute;
+      top: 40%;
+      right: -10%;
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, var(--secondary-glow) 0%, transparent 70%);
+      filter: blur(120px);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .ambient-glow-3 {
+      position: absolute;
+      top: 80%;
+      left: -20%;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      filter: blur(100px);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-base);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 5px;
+      border: 2px solid var(--bg-base);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary);
+    }
+
+    /* Typography Utilities */
+    h1, h2, h3, h4 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      transition: var(--transition-smooth);
+    }
+
+    /* Grid & Layout Containers */
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .section-padding {
+      padding: 8rem 0;
+    }
+
+    @media (max-width: 768px) {
+      .section-padding {
+        padding: 5rem 0;
+      }
+    }
+
+    /* ─── Sticky Header ─── */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(3, 7, 18, 0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+      transition: var(--transition-smooth);
+    }
+
+    .header-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 4.5rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--color-text-primary) 30%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo img {
+      width: 2rem;
+      height: 2rem;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--color-text-secondary);
+    }
+
+    .nav-links a:hover {
+      color: var(--color-text-primary);
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+
+    .header-cta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    @media (max-width: 900px) {
+      .nav-links {
+        display: none;
+      }
+    }
+
+    /* Buttons & Badge Styles */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      gap: 0.5rem;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, #7c3aed 100%);
+      color: white;
+      box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 24px rgba(139, 92, 246, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--border-color);
+      color: var(--color-text-primary);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline-glow {
+      background: transparent;
+      border-color: var(--primary);
+      color: var(--color-text-primary);
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+
+    .btn-outline-glow:hover {
+      background: var(--primary);
+      box-shadow: 0 0 20px var(--primary-glow);
+      transform: translateY(-2px);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: 1px solid transparent;
+    }
+
+    .badge-primary {
+      background: rgba(139, 92, 246, 0.1);
+      color: #a78bfa;
+      border-color: rgba(139, 92, 246, 0.2);
+    }
+
+    .badge-pro {
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(139, 92, 246, 0.1));
+      color: #f472b6;
+      border-color: rgba(236, 72, 153, 0.25);
+      box-shadow: 0 0 10px rgba(236, 72, 153, 0.1);
+    }
+
+    .badge-free {
+      background: rgba(6, 182, 212, 0.1);
+      color: #22d3ee;
+      border-color: rgba(6, 182, 212, 0.2);
+    }
+
+    /* ─── Hero Section ─── */
+    .hero {
+      position: relative;
+      padding-top: 10rem;
+      padding-bottom: 6rem;
+      text-align: center;
+    }
+
+    .hero-badge-container {
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .hero h1 {
+      font-size: 4rem;
+      line-height: 1.15;
+      max-width: 900px;
+      margin: 0 auto 1.5rem auto;
+      background: linear-gradient(to right, #ffffff 40%, #c084fc 80%, #60a5fa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--color-text-secondary);
+      max-width: 700px;
+      margin: 0 auto 3rem auto;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      .hero p {
+        font-size: 1.1rem;
+      }
+    }
+
+    /* Hero CTA & Interactive Terminal Block */
+    .hero-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 4rem;
+    }
+
+    .terminal-install {
+      display: flex;
+      align-items: center;
+      background: rgba(17, 24, 39, 0.85);
+      border: 1px solid var(--border-color);
+      border-radius: 0.75rem;
+      padding: 0.5rem 0.5rem 0.5rem 1.25rem;
+      max-width: 480px;
+      width: 100%;
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      transition: var(--transition-smooth);
+    }
+
+    .terminal-install:hover {
+      border-color: rgba(139, 92, 246, 0.5);
+      box-shadow: 0 10px 40px rgba(139, 92, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .terminal-prompt {
+      color: #3b82f6;
+      font-weight: bold;
+      user-select: none;
+      margin-right: 0.75rem;
+    }
+
+    .terminal-command {
+      color: var(--color-text-primary);
+      text-align: left;
+      flex-grow: 1;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .btn-copy {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--color-text-secondary);
+      border-radius: 0.5rem;
+      width: 2.25rem;
+      height: 2.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-copy:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--color-text-primary);
+      border-color: var(--primary);
+    }
+
+    .hero-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .hero-links a {
+      font-size: 0.9rem;
+      color: var(--color-text-secondary);
+      border-bottom: 1px dashed var(--color-text-muted);
+    }
+
+    .hero-links a:hover {
+      color: var(--color-text-primary);
+      border-color: var(--color-text-primary);
+    }
+
+    /* Terminal Mockup (Visual Highlight) */
+    .terminal-window {
+      max-width: 780px;
+      margin: 0 auto;
+      background: rgba(10, 15, 26, 0.9);
+      border: 1px solid var(--border-color);
+      border-radius: 1rem;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(139, 92, 246, 0.08);
+      overflow: hidden;
+      text-align: left;
+    }
+
+    .terminal-header {
+      background: rgba(17, 24, 39, 0.7);
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .terminal-dots {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .terminal-dot {
+      width: 0.75rem;
+      height: 0.75rem;
+      border-radius: 50%;
+    }
+
+    .dot-red { background-color: #ef4444; }
+    .dot-yellow { background-color: #f59e0b; }
+    .dot-green { background-color: #10b981; }
+
+    .terminal-title {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+    }
+
+    .terminal-body {
+      padding: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.5;
+      color: #93c5fd;
+      overflow-x: auto;
+    }
+
+    .terminal-line {
+      margin-bottom: 0.25rem;
+      display: flex;
+      min-height: 1.25rem;
+    }
+
+    .t-prompt {
+      color: #3b82f6;
+      margin-right: 0.75rem;
+      user-select: none;
+    }
+
+    .t-cmd {
+      color: #e2e8f0;
+    }
+
+    .t-white { color: #f8fafc; }
+    .t-gray { color: #64748b; }
+    .t-purple { color: #c084fc; }
+    .t-green { color: #4ade80; }
+    .t-yellow { color: #facc15; }
+    .t-cyan { color: #22d3ee; }
+
+    /* Cursor animation */
+    .t-cursor::after {
+      content: '█';
+      animation: blink 1s step-end infinite;
+      margin-left: 0.25rem;
+      color: #60a5fa;
+    }
+
+    @keyframes blink {
+      from, to { opacity: 0; }
+      50% { opacity: 1; }
+    }
+
+    /* ─── Metrics Section (Value Prop) ─── */
+    .metrics-section {
+      background: rgba(17, 24, 39, 0.4);
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+      padding: 4rem 0;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .metrics-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    }
+
+    .metric-card {
+      text-align: center;
+      padding: 1.5rem;
+    }
+
+    .metric-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+    }
+
+    .metric-value {
+      font-family: var(--font-heading);
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+
+    .metric-val-savings {
+      background: linear-gradient(135deg, #10b981 0%, #22d3ee 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .metric-val-cost {
+      color: var(--error);
+      text-decoration: line-through;
+    }
+
+    .metric-val-pro {
+      background: linear-gradient(135deg, var(--primary) 0%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .metric-desc {
+      font-size: 0.9rem;
+      color: var(--color-text-muted);
+    }
+
+    /* ─── Features Grid ─── */
+    .section-title-area {
+      text-align: center;
+      margin-bottom: 5rem;
+    }
+
+    .section-title-area h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1.25rem;
+      background: linear-gradient(135deg, #ffffff 40%, #e2e8f0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .section-title-area p {
+      font-size: 1.1rem;
+      color: var(--color-text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+
+    @media (max-width: 992px) {
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .feature-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 1rem;
+      padding: 2.5rem;
+      transition: var(--transition-smooth);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, transparent 100%);
+      opacity: 0;
+      transition: var(--transition-smooth);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(139, 92, 246, 0.3);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 92, 246, 0.05);
+    }
+
+    .feature-card:hover::before {
+      opacity: 1;
+    }
+
+    .feature-icon {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 0.75rem;
+      background: rgba(139, 92, 246, 0.1);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(139, 92, 246, 0.2);
+    }
+
+    .feature-icon-secondary {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--secondary);
+      border-color: rgba(59, 130, 246, 0.2);
+    }
+
+    .feature-icon-accent {
+      background: rgba(6, 182, 212, 0.1);
+      color: var(--accent);
+      border-color: rgba(6, 182, 212, 0.2);
+    }
+
+    .feature-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .feature-card p {
+      font-size: 0.95rem;
+      color: var(--color-text-secondary);
+    }
+
+    /* ─── Interactive Tool Explorer ─── */
+    .tool-explorer {
+      background: rgba(10, 15, 26, 0.5);
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .tabs-container {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      color: var(--color-text-secondary);
+      padding: 0.6rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .tab-btn:hover {
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--color-text-primary);
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 0 15px var(--primary-glow);
+    }
+
+    .tools-list-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      transition: var(--transition-smooth);
+    }
+
+    @media (max-width: 768px) {
+      .tools-list-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .tool-row {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 0.75rem;
+      padding: 1.25rem 1.5rem;
+      transition: var(--transition-smooth);
+    }
+
+    .tool-row:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+      background: var(--bg-surface-hover);
+      transform: translateX(4px);
+    }
+
+    .tool-status {
+      flex-shrink: 0;
+    }
+
+    .tool-info {
+      flex-grow: 1;
+    }
+
+    .tool-name-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .tool-name {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #e2e8f0;
+    }
+
+    .tool-desc {
+      font-size: 0.85rem;
+      color: var(--color-text-secondary);
+    }
+
+    /* ─── Pricing Section ─── */
+    .pricing-card-wrapper {
+      max-width: 540px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .pricing-card-wrapper::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+      border-radius: 1.5rem;
+      z-index: -1;
+      filter: blur(10px);
+      opacity: 0.4;
+      transition: var(--transition-smooth);
+    }
+
+    .pricing-card-wrapper:hover::before {
+      filter: blur(15px);
+      opacity: 0.6;
+    }
+
+    .pricing-card {
+      background: rgba(10, 15, 26, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1.5rem;
+      padding: 3.5rem;
+      text-align: center;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .pricing-card h3 {
+      font-size: 1.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .pricing-card .pricing-price {
+      font-family: var(--font-heading);
+      font-size: 4rem;
+      font-weight: 800;
+      margin: 1.5rem 0 0.5rem 0;
+      line-height: 1;
+      background: linear-gradient(135deg, #ffffff 60%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .pricing-card .pricing-duration {
+      font-size: 0.9rem;
+      color: var(--color-text-secondary);
+      margin-bottom: 2.5rem;
+    }
+
+    .pricing-features {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .pricing-features li {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.95rem;
+      color: var(--color-text-primary);
+    }
+
+    .pricing-features li svg {
+      color: var(--success);
+      flex-shrink: 0;
+    }
+
+    .pricing-footer-info {
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+      margin-top: 1.5rem;
+    }
+
+    /* ─── FAQs (Accordion) ─── */
+    .faq-list {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .faq-item {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 0.75rem;
+      overflow: hidden;
+      transition: var(--transition-smooth);
+    }
+
+    .faq-item:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .faq-trigger {
+      width: 100%;
+      padding: 1.5rem;
+      background: transparent;
+      border: none;
+      color: var(--color-text-primary);
+      text-align: left;
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .faq-trigger svg {
+      color: var(--color-text-secondary);
+      transition: var(--transition-smooth);
+    }
+
+    .faq-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+      padding: 0 1.5rem;
+    }
+
+    .faq-content p {
+      padding-bottom: 1.5rem;
+      font-size: 0.95rem;
+      color: var(--color-text-secondary);
+      line-height: 1.6;
+    }
+
+    .faq-item.active .faq-trigger svg {
+      transform: rotate(180deg);
+      color: var(--primary);
+    }
+
+    .faq-item.active .faq-content {
+      max-height: 250px;
+      transition: max-height 0.3s ease-in;
+    }
+
+    /* ─── Footer ─── */
+    footer {
+      background: rgba(3, 7, 18, 0.95);
+      border-top: 1px solid var(--border-color);
+      padding: 4rem 0 3rem 0;
+      font-size: 0.9rem;
+      color: var(--color-text-secondary);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 4rem;
+      margin-bottom: 4rem;
+    }
+
+    @media (max-width: 768px) {
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+    }
+
+    .footer-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--color-text-primary);
+    }
+
+    .footer-disclaimer {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      line-height: 1.5;
+    }
+
+    .footer-column h4 {
+      color: var(--color-text-primary);
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1.25rem;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .footer-links a:hover {
+      color: var(--color-text-primary);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-copy {
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+    }
+
+    /* ─── Animations ─── */
+    .glow-hover {
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Header -->
+  <header>
+    <div class="container header-nav">
+      <a href="#" class="logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+          <rect x="2" y="2" width="20" height="20" rx="4" stroke="currentColor" stroke-width="2.5"/>
+          <path d="M7 8H17" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M7 12H17" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M7 16H13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        Clarik
+      </a>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#tools">Explore Tools</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#faqs">FAQs</a></li>
+      </ul>
+      <div class="header-cta">
+        <a href="#pricing" class="btn btn-outline-glow" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Unlock Pro</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero container">
+    <div class="hero-badge-container">
+      <span class="badge badge-primary">Model Context Protocol (MCP) Server</span>
+    </div>
+    <h1>Double Claude's memory.<br>Slash your API costs by 70%.</h1>
+    <p>Clarik is the local-first, zero-telemetry MCP server that keeps your context clean, ranks relevant files, and prevents Claude from scanning secret keys. Installs in 5 seconds.</p>
+    
+    <div class="hero-actions">
+      <!-- Interactive copyable terminal command -->
+      <div class="terminal-install">
+        <span class="terminal-prompt">$</span>
+        <span class="terminal-command" id="installCmd">npx clarik install</span>
+        <button class="btn-copy" onclick="copyCommand()" aria-label="Copy install command" title="Copy command">
+          <svg id="copyIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="hero-links">
+        <a href="#tools">Explore 20 Tools</a>
+        <span>•</span>
+        <a href="#pricing">Upgrade to Pro ($20 lifetime)</a>
+      </div>
+    </div>
+
+    <!-- Beautiful Terminal Mockup -->
+    <div class="terminal-window">
+      <div class="terminal-header">
+        <div class="terminal-dots">
+          <span class="terminal-dot dot-red"></span>
+          <span class="terminal-dot dot-yellow"></span>
+          <span class="terminal-dot dot-green"></span>
+        </div>
+        <div class="terminal-title">clarik --install</div>
+        <div style="width: 36px;"></div>
+      </div>
+      <div class="terminal-body">
+        <div class="terminal-line"><span class="t-prompt">$</span><span class="t-cmd">npx clarik install</span></div>
+        <div class="terminal-line"></div>
+        <div class="terminal-line"><span class="t-white">╔═══════════════════════════════════════╗</span></div>
+        <div class="terminal-line"><span class="t-white">║           Welcome to Clarik           ║</span></div>
+        <div class="terminal-line"><span class="t-white">║   Clarity and memory for Claude.      ║</span></div>
+        <div class="terminal-line"><span class="t-white">╚═══════════════════════════════════════╝</span></div>
+        <div class="terminal-line"></div>
+        <div class="terminal-line"><span class="t-green">✅ Detected: win32 (x64)</span></div>
+        <div class="terminal-line"><span class="t-green">✅ Detected: Claude Desktop</span></div>
+        <div class="terminal-line"><span class="t-green">✅ Checking compatibility...</span></div>
+        <div class="terminal-line"><span class="t-green">✅ Created ~/.clarik/ directory</span></div>
+        <div class="terminal-line"><span class="t-green">✅ Configured Claude Desktop</span></div>
+        <div class="terminal-line"><span class="t-green">✅ Installing Clarik...</span></div>
+        <div class="terminal-line"><span class="t-green">✅ Done. Clarik is active.</span></div>
+        <div class="terminal-line"></div>
+        <div class="terminal-line"><span class="t-cyan">  FREE TIER ACTIVE  (8 of 20 tools)</span></div>
+        <div class="terminal-line"></div>
+        <div class="terminal-line"><span class="t-yellow">  💰 Token Savings</span></div>
+        <div class="terminal-line"><span class="t-gray">     Average developer saves $47–73/month</span></div>
+        <div class="terminal-line"></div>
+        <div class="terminal-line"><span class="t-purple">Open Claude and start chatting.</span></div>
+        <div class="terminal-line"><span class="t-purple">Clarik is already working in the background.</span><span class="t-cursor"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Metrics Value Prop Section -->
+  <section class="metrics-section">
+    <div class="container metrics-grid">
+      <div class="metric-card">
+        <div class="metric-title">Estimated Savings</div>
+        <div class="metric-value metric-val-savings">$47–$73</div>
+        <div class="metric-desc">Saved on Claude API costs per month</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Cost without Clarik</div>
+        <div class="metric-value metric-val-cost">~$78</div>
+        <div class="metric-desc">Due to massive, bloated project contexts</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Clarik Pro Access</div>
+        <div class="metric-value metric-val-pro">$20</div>
+        <div class="metric-desc">One-time payment. Lifetime updates.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="section-padding container">
+    <div class="section-title-area">
+      <span class="badge badge-primary" style="margin-bottom: 1rem;">Core Features</span>
+      <h2>Designed for Local Speed & Safety</h2>
+      <p>Clarik is a secure, light-weight, local-first bridge between your system and Claude that runs zero cloud operations.</p>
+    </div>
+
+    <div class="features-grid">
+      <!-- Feature 1 -->
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M4 6h16M4 12h16M4 18h11"/>
+          </svg>
+        </div>
+        <h3>Context Trimming</h3>
+        <p>Rank and trim file contents dynamically based on target budgets. Keep Claude focused only on what is strictly relevant.</p>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="feature-card">
+        <div class="feature-icon feature-icon-secondary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        <h3>Precise Token Metering</h3>
+        <p>Built with the official Anthropic native tokenizer for 100% precision. Never hit context exhaustions or bloated billing surprises.</p>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="feature-card">
+        <div class="feature-icon feature-icon-accent">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <h3>Credential Shield</h3>
+        <p>Repo Guard proactively blocks Claude from scanning credential folders, SSL certs, secret files, or sensitive server directories.</p>
+      </div>
+
+      <!-- Feature 4 -->
+      <div class="feature-card">
+        <div class="feature-icon feature-icon-accent">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+          </svg>
+        </div>
+        <h3>Ranked Memory Recall</h3>
+        <p>Fact-aggregation architecture that injects project memories depending on exact queries, avoiding generic context leakage.</p>
+      </div>
+
+      <!-- Feature 5 -->
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <path d="M9 3v18M15 3v18M3 9h18M3 15h18"/>
+          </svg>
+        </div>
+        <h3>Codebase Indexing</h3>
+        <p>Auto-generate architectural layouts, module indexes, and dependencies in real-time, giving Claude an instant map of the code.</p>
+      </div>
+
+      <!-- Feature 6 -->
+      <div class="feature-card">
+        <div class="feature-icon feature-icon-secondary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+            <path d="M12 6v6l4 2"/>
+          </svg>
+        </div>
+        <h3>Offline Verification</h3>
+        <p>License validation operates 100% locally with a robust grace period. No internet? No worry. Your developer tools never fail.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Tool Explorer Section -->
+  <section id="tools" class="section-padding tool-explorer">
+    <div class="container">
+      <div class="section-title-area">
+        <span class="badge badge-primary" style="margin-bottom: 1rem;">Tool Registry</span>
+        <h2>20 Specialized Tools for Claude</h2>
+        <p>Clarik equips Claude with a tailored suite of tools. Filter below to see what is included in each tier.</p>
+      </div>
+
+      <div class="tabs-container">
+        <button class="tab-btn active" onclick="filterTools('all')">All Tools (20)</button>
+        <button class="tab-btn" onclick="filterTools('free')">Free Tier (8)</button>
+        <button class="tab-btn" onclick="filterTools('pro')">Pro Tier (12)</button>
+      </div>
+
+      <!-- Tools Grid -->
+      <div class="tools-list-grid" id="toolsList">
+        <!-- Free Tools -->
+        <div class="tool-row" data-tier="free">
+          <div class="tool-status"><span class="badge badge-free">Free</span></div>
+          <div class="tool-info">
+            <div class="tool-name-row">
+              <span class="tool-name">clarik_memory_learn</span>
+            </div>
+            <p class="tool-desc">Extract facts, record project learnings, and automatically strip verbose model thinking blocks.</p>
+          </div>
+        </div>
+
+        <div class="tool-row" data-tier="free">
+          <div class="tool-status"><span class="badge badge-free">Free</span></div>
+          <div class="tool-info">
+            <div class="tool-name-row">
+              <span class="tool-name">clarik_memory_recall</span>
+            </div>
+            <p class="tool-desc">Ranked fact injection matching queries exactly. Keeps token overhead minimal and highly relevant.</p>
+          </div>
+        </div>
+
+        <div class="tool-row" data-tier="free">
+          <div class="tool-status"><span class="badge badge-free">Free</span></div>
+          <div class="tool-info">
+            <div class="tool-name-row">
+              <span class="tool-name">clarik_memory_list</span>
+            </div>
+            <p class="tool-desc">Displays categorized memories, reference counters, and relevance breakdown for the current codebase.</p>
+          </div>
+        </div>
+
+        <div class="tool-row" data-tier="free">
+          <div class="tool-status"><span class="badge badge-free">Free</span></div>
+          <div class="tool-info">
+            <div class="tool-name-row">
+              <span class="tool-name">clarik_memory_edit</span>
+            </div>
+            <p class="tool-desc">Modify, re-categorize, prune, or expand existing facts in local memory maps.</p>
+          </div>
+        </div>
+
+        <div class="tool-row" data-tier="free">
+          <div class="tool-status"><span class="badge badge-free">Free</span></div>
+          <div class="tool-info">
+            <div class="tool-name-row">
+              <span class="tool-name">clarik_memory_clear</span>
+            </div>
+            <p class="tool-desc">Safely clear memories for specific files, domains, categories, or wipe the entire directory clean.</p>
+          </div>
+        </div>
+
+        <div class="tool-row" data-tier="free">
+          <div class="tool-status"><span class="badge badge-free">Free</span></div>
+          <div class="tool-info">
+            <div class="tool-name-row">
+              <span class="tool-name">clarik_context_trim</span>
+            </div>
+            <p class="tool-desc">Dynamically ranks, formats, and aggregates workspace file components under predefined budgets.</p>
+          </div>
+        </div>
+
+        <div class="tool-row" data-tier="free">
+          <div class="tool-status"><span class="badge badge-free">Free</span></div>
+          <div class="tool-info">
+            <div class="tool-name-row">
+              <span class="tool-name">clarik_checkpoint_save</span>
+            </div>
+            <p class="tool-desc">Take lightweight structured session snapshots, capturing exact working directories and active paths.</p>
+          </div>
+        </div>
+
+        <div class="tool-row" data-tier="free">
+          <div class="tool-status"><span class="badge badge-free">Free</span></div>
+          <div class="tool-info">
+            <div class="tool-name-row">
+              <span class="tool-name">clarik_checkpoint_resume</span>
+            </div>
+            <p class="tool-desc">Instantly restore previous checkpoints to bring Claude back to the precise workspace state.</p>
+          </div>
+        </div>
+
+        <!-- Pro Tools -->
+        <div class="tool-row" data-tier="pro">
+          <div class="tool-status"><span class="badge badge-pro">Pro</span></div>
+          <div class="tool-info">
+            <div class="tool-name-row">
+              <span class="tool-name">clarik_project_index</span>
+            </div>
+            <p class="tool-desc">Full file mapping, dependency trees, and architecture layout understanding for codebase navigation.</p>
+          </div>
+        </div>
+
+        <div class="tool-row" data-tier="pro">
+          <div class="tool-status"><span class="badge badge-pro">Pro</span></div>
+          <div class="tool-info">
+            <div class="tool-name-row">
+              <span class="tool-name">clarik_token_monitor</span>
+            </div>
+            <p class="tool-desc">Monitors live session token consumption. Warns before model exhaustion limits are triggered.</p>
+          </div>
+        </div>
+
+        <div class="tool-row" data-tier="pro">
+          <div class="tool-status"><span class="badge badge-pro">Pro</span></div>
+          <div class="tool-info">
+            <div class="tool-name-row">
+              <span class="tool-name">clarik_memory_archive</span>
+            </div>
+            <p class="tool-desc">Automatically archive stale, outdated facts to keep your active memory pool extremely lean and fast.</p>
+          </div>
+        </div>
+
+        <div class="tool-row" data-tier="pro">
+          <div class="tool-status"><span class="badge badge-pro">Pro</span></div>
+          <div class="tool-info">
+            <div class="tool-name-row">
+              <span class="tool-name">clarik_conflict_resolver</span>
+            </div>
+            <p class="tool-desc">Scan, aggregate, and resolve conflicting facts or mismatched constraints stored in memory files.</p>
+          </div>
+        </div>
+
+        <div class="tool-row" data-tier="pro">
+          <div class="tool-status"><span class="badge badge-pro">Pro</span></div>
+          <div class="tool-info">
+            <div class="tool-name-row">
+              <span class="tool-name">clarik_change_scope_guard</span>
+            </div>
+            <p class="tool-desc">Confirm edits to critical protected files like workflows, migration scripts, or production bundles.</p>
+          </div>
+        </div>
+
+        <div class="tool-row" data-tier="pro">
+          <div class="tool-status"><span class="badge badge-pro">Pro</span></div>
+          <div class="tool-info">
+            <div class="tool-name-row">
+              <span class="tool-name">clarik_assumption_checker</span>
+            </div>
+            <p class="tool-desc">Intercept and notify the developer if Claude begins making assumptions instead of reading local facts.</p>
+          </div>
+        </div>
+
+        <div class="tool-row" data-tier="pro">
+          <div class="tool-status"><span class="badge badge-pro">Pro</span></div>
+          <div class="tool-info">
+            <div class="tool-name-row">
+              <span class="tool-name">clarik_session_export</span>
+            </div>
+            <p class="tool-desc">Exports full learning logs, action timelines, and memory states in clean Markdown, JSON, or CSV.</p>
+          </div>
+        </div>
+
+        <div class="tool-row" data-tier="pro">
+          <div class="tool-status"><span class="badge badge-pro">Pro</span></div>
+          <div class="tool-info">
+            <div class="tool-name-row">
+              <span class="tool-name">clarik_prompt_library</span>
+            </div>
+            <p class="tool-desc">Access optimized, pre-mapped custom system instructions for specialized codebase workflows.</p>
+          </div>
+        </div>
+
+        <div class="tool-row" data-tier="pro">
+          <div class="tool-status"><span class="badge badge-pro">Pro</span></div>
+          <div class="tool-info">
+            <div class="tool-name-row">
+              <span class="tool-name">clarik_session_search</span>
+            </div>
+            <p class="tool-desc">Full-text regex search across archived timelines, session transcripts, and learning logs.</p>
+          </div>
+        </div>
+
+        <div class="tool-row" data-tier="pro">
+          <div class="tool-status"><span class="badge badge-pro">Pro</span></div>
+          <div class="tool-info">
+            <div class="tool-name-row">
+              <span class="tool-name">clarik_platform_compat</span>
+            </div>
+            <p class="tool-desc">Translates terminal behaviors, pathing, and OS-specific scripts cleanly between environment layers.</p>
+          </div>
+        </div>
+
+        <div class="tool-row" data-tier="pro">
+          <div class="tool-status"><span class="badge badge-pro">Pro</span></div>
+          <div class="tool-info">
+            <div class="tool-name-row">
+              <span class="tool-name">clarik_grace_period</span>
+            </div>
+            <p class="tool-desc">Maintains secure license validation completely locally when offline for up to 30 continuous days.</p>
+          </div>
+        </div>
+
+        <div class="tool-row" data-tier="pro">
+          <div class="tool-status"><span class="badge badge-pro">Pro</span></div>
+          <div class="tool-info">
+            <div class="tool-name-row">
+              <span class="tool-name">clarik_system_telemetry_wipe</span>
+            </div>
+            <p class="tool-desc">Aggressively cleanses workspace environments of system tracking indices and cache blobs.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section id="pricing" class="section-padding container">
+    <div class="ambient-glow-3"></div>
+    <div class="section-title-area">
+      <span class="badge badge-primary" style="margin-bottom: 1rem;">Pricing</span>
+      <h2>Simple, Lifetime Pricing</h2>
+      <p>Free for hobbyists. Paid once for serious developers. No recurring subscriptions.</p>
+    </div>
+
+    <div class="pricing-card-wrapper">
+      <div class="pricing-card">
+        <h3>Clarik Pro</h3>
+        <p style="color: var(--color-text-secondary); font-size: 0.95rem;">For professional developers maximizing Claude</p>
+        
+        <div class="pricing-price">$20</div>
+        <div class="pricing-duration">One-time payment. Lifetime access.</div>
+        
+        <ul class="pricing-features">
+          <li>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Unlock all 20 tools (adds 12 advanced Pro tools)
+          </li>
+          <li>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Official Anthropic token monitoring integrations
+          </li>
+          <li>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Dynamic project codebase index mapping
+          </li>
+          <li>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Secure, fully offline license validation
+          </li>
+          <li>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Lifetime updates + email priority support
+          </li>
+        </ul>
+
+        <a href="https://adshieldpro.gumroad.com/l/ClaricRPCFramework" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem; border-radius: 0.75rem;">
+          Get Clarik Pro Lifetime
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+        
+        <p class="pricing-footer-info">Secure checkout via Gumroad. Instant license key delivery.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive FAQs Section -->
+  <section id="faqs" class="section-padding container" style="border-top: 1px solid var(--border-color);">
+    <div class="section-title-area">
+      <span class="badge badge-primary" style="margin-bottom: 1rem;">Help</span>
+      <h2>Frequently Asked Questions</h2>
+      <p>Have questions about Clarik? We've got answers.</p>
+    </div>
+
+    <div class="faq-list">
+      <!-- FAQ 1 -->
+      <div class="faq-item">
+        <button class="faq-trigger" onclick="toggleFaq(this)">
+          How does Clarik save API costs?
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div class="faq-content">
+          <p>Claude Desktop and Claude Code by default load entire file contents and history, consuming massive amounts of context tokens. Under billing APIs (like Claude Sonnet 4.6), input tokens cost significantly more. Clarik trims redundant files and extracts concise learning summaries in local memory. Only the highly relevant facts are recalled and injected, reducing input tokens by up to 70%.</p>
+        </div>
+      </div>
+
+      <!-- FAQ 2 -->
+      <div class="faq-item">
+        <button class="faq-trigger" onclick="toggleFaq(this)">
+          Is my code or memory shared with any servers?
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div class="faq-content">
+          <p>No. Clarik is designed as a local-first bridge. All indexes, recall facts, credentials filters, and workspace logs are stored 100% locally on your computer inside the <code>~/.clarik/</code> directory. Absolutely zero data is transmitted to external telemetry servers. Your code remains completely private.</p>
+        </div>
+      </div>
+
+      <!-- FAQ 3 -->
+      <div class="faq-item">
+        <button class="faq-trigger" onclick="toggleFaq(this)">
+          How do I activate my license?
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div class="faq-content">
+          <p>Once you complete your purchase on Gumroad, you will receive an instant license key. Copy it, open your terminal, and execute: <code>npx clarik activate YOUR-KEY</code>. The CLI will validate it instantly and unlock access to all 20 tools across both Claude Desktop and Claude Code.</p>
+        </div>
+      </div>
+
+      <!-- FAQ 4 -->
+      <div class="faq-item">
+        <button class="faq-trigger" onclick="toggleFaq(this)">
+          Does it work with both Claude Desktop and Claude Code?
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div class="faq-content">
+          <p>Yes. The installer automatically scans your system for active instances of Claude Desktop and Claude Code. It then writes the appropriate JSON settings directly into Claude Desktop's <code>config.json</code> and automatically invokes the <code>claude mcp add</code> protocols for Claude Code. Setup is completely seamless.</p>
+        </div>
+      </div>
+
+      <!-- FAQ 5 -->
+      <div class="faq-item">
+        <button class="faq-trigger" onclick="toggleFaq(this)">
+          What is the 30-day refund policy?
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div class="faq-content">
+          <p>If Clarik does not save you token costs or improve your programming workflows inside Claude within your first 30 days, simply contact support for a full, hassle-free refund. Your satisfaction is our primary metric.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="2" width="20" height="20" rx="4" stroke="currentColor" stroke-width="2.5"/>
+            <path d="M7 8H17" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M7 12H17" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M7 16H13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          Clarik
+        </div>
+        <p>Clarity and memory for Claude. One-command installer.</p>
+        <p class="footer-disclaimer">Clarik is an independent, community-built tool. It is not affiliated with, endorsed by, or associated with Anthropic PBC. Claude® is a registered trademark of Anthropic PBC.</p>
+      </div>
+      
+      <div class="footer-column">
+        <h4>Product</h4>
+        <ul class="footer-links">
+          <li><a href="#features">Features</a></li>
+          <li><a href="#tools">Explore Tools</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4>Legal</h4>
+        <ul class="footer-links">
+          <li><a href="terms.html">Terms of Service</a></li>
+          <li><a href="terms.html#privacy">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <div class="footer-copy">&copy; 2026 Clarik. All rights reserved.</div>
+      <div style="font-size: 0.8rem; color: var(--color-text-muted);">Crafted securely for local-first AI development.</div>
+    </div>
+  </footer>
+
+  <script>
+    // ─── Interactive Functions ───
+
+    // Copy terminal install command
+    function copyCommand() {
+      const cmdText = document.getElementById("installCmd").textContent;
+      navigator.clipboard.writeText(cmdText).then(() => {
+        const copyIcon = document.getElementById("copyIcon");
+        const btn = document.querySelector(".btn-copy");
+        
+        // Success check animation
+        btn.style.borderColor = "var(--success)";
+        btn.style.color = "var(--success)";
+        copyIcon.innerHTML = `<path d="M20 6L9 17l-5-5" />`;
+        
+        setTimeout(() => {
+          btn.style.borderColor = "var(--border-color)";
+          btn.style.color = "var(--color-text-secondary)";
+          copyIcon.innerHTML = `
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          `;
+        }, 1500);
+      });
+    }
+
+    // Filter tools registry tab
+    function filterTools(category) {
+      // Toggle button active classes
+      const buttons = document.querySelectorAll(".tab-btn");
+      buttons.forEach(btn => btn.classList.remove("active"));
+      
+      // Select appropriate button
+      const clickedBtn = Array.from(buttons).find(btn => 
+        btn.textContent.toLowerCase().includes(category) || 
+        (category === 'all' && btn.textContent.toLowerCase().includes('all'))
+      );
+      if (clickedBtn) clickedBtn.classList.add("active");
+
+      // Filter rows
+      const rows = document.querySelectorAll(".tool-row");
+      rows.forEach(row => {
+        const tier = row.getAttribute("data-tier");
+        if (category === 'all' || tier === category) {
+          row.style.display = "flex";
+          row.style.opacity = "1";
+          row.style.transform = "scale(1)";
+        } else {
+          row.style.display = "none";
+          row.style.opacity = "0";
+          row.style.transform = "scale(0.95)";
+        }
+      });
+    }
+
+    // Toggle FAQ Accordions
+    function toggleFaq(button) {
+      const item = button.parentElement;
+      const isActive = item.classList.contains("active");
+      
+      // Close all items
+      const allItems = document.querySelectorAll(".faq-item");
+      allItems.forEach(i => {
+        i.classList.remove("active");
+        i.querySelector(".faq-content").style.maxHeight = null;
+      });
+      
+      // If clicked item wasn't active, open it
+      if (!isActive) {
+        item.classList.add("active");
+        const content = item.querySelector(".faq-content");
+        content.style.maxHeight = content.scrollHeight + "px";
+      }
+    }
+  </script>
+
+</body>
+</html>

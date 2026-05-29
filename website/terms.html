@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms & Privacy — Clarik</title>
+  <meta name="description" content="Terms of service and privacy policy for Clarik local MCP server.">
+  
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── Shared Design Tokens ─── */
+    :root {
+      --bg-base: #030712;
+      --bg-surface: rgba(17, 24, 39, 0.7);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --color-text-primary: #f3f4f6;
+      --color-text-secondary: #9ca3af;
+      --color-text-muted: #6b7280;
+      --primary: #8b5cf6;
+      --primary-glow: rgba(139, 92, 246, 0.25);
+      --font-heading: 'Outfit', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --max-width: 800px;
+      --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-base);
+    }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--color-text-primary);
+      background-color: var(--bg-base);
+      line-height: 1.7;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Ambient Glow background */
+    body::before {
+      content: '';
+      position: absolute;
+      top: -10%;
+      left: 30%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+      filter: blur(100px);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Sticky Header */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(3, 7, 18, 0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .header-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 4.5rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--color-text-primary) 30%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .btn-outline-glow {
+      background: transparent;
+      border: 1px solid var(--primary);
+      color: var(--color-text-primary);
+      box-shadow: 0 0 10px var(--primary-glow);
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-outline-glow:hover {
+      background: var(--primary);
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
+
+    /* Terms Body Layout */
+    .terms-layout {
+      padding-top: 10rem;
+      padding-bottom: 6rem;
+    }
+
+    .terms-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .terms-header h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(to right, #ffffff 60%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .terms-header p {
+      color: var(--color-text-secondary);
+      font-size: 1.1rem;
+    }
+
+    .content-card {
+      background: rgba(17, 24, 39, 0.4);
+      border: 1px solid var(--border-color);
+      border-radius: 1rem;
+      padding: 3rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    @media (max-width: 640px) {
+      .content-card {
+        padding: 1.5rem;
+      }
+    }
+
+    .legal-section {
+      margin-bottom: 3rem;
+    }
+
+    .legal-section h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--color-text-primary);
+      font-family: var(--font-heading);
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+    }
+
+    .legal-section p, .legal-section li {
+      color: var(--color-text-secondary);
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    .legal-section ul {
+      margin-left: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .legal-section li {
+      margin-bottom: 0.5rem;
+    }
+
+    /* Footer */
+    footer {
+      background: rgba(3, 7, 18, 0.95);
+      border-top: 1px solid var(--border-color);
+      padding: 4rem 0 3rem 0;
+      font-size: 0.9rem;
+      color: var(--color-text-secondary);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 4rem;
+      margin-bottom: 4rem;
+    }
+
+    @media (max-width: 768px) {
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+    }
+
+    .footer-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--color-text-primary);
+    }
+
+    .footer-disclaimer {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      line-height: 1.5;
+    }
+
+    .footer-column h4 {
+      color: var(--color-text-primary);
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1.25rem;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .footer-links a:hover {
+      color: var(--color-text-primary);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-copy {
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Header -->
+  <header>
+    <div class="container header-nav">
+      <a href="index.html" class="logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+          <rect x="2" y="2" width="20" height="20" rx="4" stroke="currentColor" stroke-width="2.5"/>
+          <path d="M7 8H17" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M7 12H17" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M7 16H13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        Clarik
+      </a>
+      <div class="header-cta">
+        <a href="index.html" class="btn-outline-glow">Back to Homepage</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Layout -->
+  <main class="container terms-layout">
+    <div class="terms-header">
+      <h1>Terms & Privacy</h1>
+      <p>Last updated: May 29, 2026</p>
+    </div>
+
+    <div class="content-card">
+      <!-- Section: Terms of Service -->
+      <section class="legal-section">
+        <h2>1. Terms of Service</h2>
+        <p>By installing or using Clarik (the "Software"), you agree to be bound by these terms. If you do not agree to these terms, do not install or use the Software.</p>
+        
+        <ul>
+          <li><strong>Not Affiliated with Anthropic</strong>: Clarik is an independent, community-built tool. It is not affiliated with, endorsed by, or associated with Anthropic PBC in any way. Claude® and Claude Desktop® are registered trademarks of Anthropic PBC.</li>
+          <li><strong>License Model</strong>: The Software is licensed under the MIT License for free features. Pro features require a valid, personal, non-transferable license key purchased through our authorized merchant (Gumroad). You may not redistribute, resell, or share Pro license keys with third parties.</li>
+          <li><strong>Zero Warranty</strong>: The Software is provided "as-is", without warranty of any kind, express or implied. The developers shall not be liable for any damages, token costs, or data incidents resulting from the use of this Software.</li>
+          <li><strong>Savings Estimates</strong>: Average monthly savings estimates ($47–73/month) are illustrative indicators based on standard developer usage profiles. Actual savings vary widely based on your particular query frequency, project size, model choices, and API billing rates, and are not guarantees of performance.</li>
+          <li><strong>Refund Policy</strong>: Licenses are governed by Gumroad's standard terms. If Clarik does not meet your needs, contact support within 7 days of purchase for refund exceptions.</li>
+        </ul>
+      </section>
+
+      <!-- Section: Privacy Policy -->
+      <section id="privacy" class="legal-section" style="margin-bottom: 0;">
+        <h2>2. Privacy Policy</h2>
+        <p>We believe in absolute developer privacy. That is why Clarik is architected from the ground up as a local-first application.</p>
+        
+        <ul>
+          <li><strong>Local-First Storage</strong>: All learning logs, active indexing files, recall vectors, configuration states, and codebase maps are stored completely locally on your machine inside the <code>~/.clarik/</code> folder.</li>
+          <li><strong>No Telemetry</strong>: We do not deploy telemetry, background tracking, analytics, or error reporting scripts to any external servers. We do not gather, store, or sell any personal information or codebase contents.</li>
+          <li><strong>Third-Party Integrations</strong>: Your codebase data is read locally and shared solely with the Anthropic API through your own secure, direct interactions in Claude Desktop or Claude Code. Clarik does not act as a proxy or intermediary server.</li>
+          <li><strong>License Verification</strong>: To validate your license key, a secure verification check is executed against Gumroad. If offline, the software will leverage local grace indicators for up to 30 days to ensure zero disruption to your development environment.</li>
+        </ul>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="2" width="20" height="20" rx="4" stroke="currentColor" stroke-width="2.5"/>
+            <path d="M7 8H17" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M7 12H17" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M7 16H13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          Clarik
+        </div>
+        <p>Clarity and memory for Claude. One-command installer.</p>
+        <p class="footer-disclaimer">Clarik is an independent, community-built tool. It is not affiliated with, endorsed by, or associated with Anthropic PBC. Claude® is a registered trademark of Anthropic PBC.</p>
+      </div>
+      
+      <div class="footer-column">
+        <h4>Product</h4>
+        <ul class="footer-links">
+          <li><a href="index.html#features">Features</a></li>
+          <li><a href="index.html#tools">Explore Tools</a></li>
+          <li><a href="index.html#pricing">Pricing</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4>Legal</h4>
+        <ul class="footer-links">
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#privacy">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <div class="footer-copy">&copy; 2026 Clarik. All rights reserved.</div>
+      <div style="font-size: 0.8rem; color: var(--color-text-muted);">Crafted securely for local-first AI development.</div>
+    </div>
+  </footer>
+
+</body>
+</html>
