@@ -31,3 +31,7 @@ clarik-exports/
 # OS metadata
 .DS_Store
 Thumbs.db
+
+# MCP Registry Publisher Binary
+mcp-publisher.exe
+
