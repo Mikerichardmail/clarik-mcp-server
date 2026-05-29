@@ -6,85 +6,463 @@
   "tools": [
     {
       "name": "clarik_memory_learn",
-      "description": "Extract facts, record project learnings, and automatically strip verbose model thinking blocks."
+      "description": "Extract and store facts from conversation. Strips thinking blocks. Only learns from final assistant responses and user-confirmed facts.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "The conversation content to extract facts from"
+          },
+          "source": {
+            "type": "string",
+            "enum": ["user", "assistant_final"],
+            "description": "Source of the content"
+          },
+          "projectPath": {
+            "type": "string",
+            "description": "Project root path for isolation"
+          }
+        },
+        "required": ["content", "source"]
+      }
     },
     {
       "name": "clarik_memory_recall",
-      "description": "Ranked fact injection matching queries exactly. Keeps token overhead minimal and highly relevant."
+      "description": "Retrieve relevant memories ranked by relevance, recency, and importance for the current query.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The query to find relevant memories for"
+          },
+          "maxResults": {
+            "type": "number",
+            "description": "Maximum number of memories to return (default: 10)"
+          },
+          "projectPath": {
+            "type": "string",
+            "description": "Project root path for isolation"
+          }
+        },
+        "required": ["query"]
+      }
     },
     {
       "name": "clarik_memory_list",
-      "description": "Displays categorized memories, reference counters, and relevance breakdown for the current codebase."
+      "description": "Show all memories for the current project, optionally filtered by category.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": ["project", "decision", "gotcha", "file", "person"],
+            "description": "Filter by category"
+          },
+          "projectPath": {
+            "type": "string",
+            "description": "Project root path for isolation"
+          }
+        }
+      }
     },
     {
       "name": "clarik_memory_edit",
-      "description": "Modify, re-categorize, prune, or expand existing facts in local memory maps."
+      "description": "Update a specific memory fact by ID.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "factId": {
+            "type": "string",
+            "description": "The ID of the memory fact to edit"
+          },
+          "newFact": {
+            "type": "string",
+            "description": "Updated fact text"
+          },
+          "newConfidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Updated confidence score"
+          },
+          "newStatus": {
+            "type": "string",
+            "enum": ["active", "deprecated", "conflicting"],
+            "description": "Updated status"
+          },
+          "projectPath": {
+            "type": "string",
+            "description": "Project root path for isolation"
+          }
+        },
+        "required": ["factId"]
+      }
     },
     {
       "name": "clarik_memory_clear",
-      "description": "Safely clear memories for specific files, domains, categories, or wipe the entire directory clean."
+      "description": "Clear memories by category or clear all memories for the current project.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": ["project", "decision", "gotcha", "file", "person", "all"],
+            "description": "Category to clear, or \"all\" to clear everything"
+          },
+          "projectPath": {
+            "type": "string",
+            "description": "Project root path for isolation"
+          }
+        },
+        "required": ["category"]
+      }
     },
     {
       "name": "clarik_context_trim",
-      "description": "Dynamically ranks, formats, and aggregates workspace file components under predefined budgets."
+      "description": "Intelligent memory injection — returns the most relevant facts and context within a token budget.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Current query or topic for relevance ranking"
+          },
+          "budgetTokens": {
+            "type": "number",
+            "description": "Token budget for injected context (default: 4000)"
+          },
+          "projectPath": {
+            "type": "string",
+            "description": "Project root path for isolation"
+          }
+        },
+        "required": ["query"]
+      }
     },
     {
       "name": "clarik_checkpoint_save",
-      "description": "Take lightweight structured session snapshots, capturing exact working directories and active paths."
+      "description": "Generate a structured checkpoint of the current session state for resuming later.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "goal": {
+            "type": "string",
+            "description": "Current working goal"
+          },
+          "progress": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of completed items"
+          },
+          "decisions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Key decisions made"
+          },
+          "nextStep": {
+            "type": "string",
+            "description": "What to do next when resuming"
+          },
+          "openFiles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Currently open files"
+          },
+          "openQuestions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Unresolved questions"
+          },
+          "projectPath": {
+            "type": "string",
+            "description": "Project root path for isolation"
+          }
+        },
+        "required": ["goal", "progress", "decisions", "nextStep"]
+      }
     },
     {
       "name": "clarik_checkpoint_resume",
-      "description": "Instantly restore previous checkpoints to bring Claude back to the precise workspace state."
+      "description": "Load the most recent checkpoint (or a specific one) to resume work.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "checkpointId": {
+            "type": "string",
+            "description": "Specific checkpoint ID to resume (default: latest)"
+          },
+          "projectPath": {
+            "type": "string",
+            "description": "Project root path for isolation"
+          }
+        }
+      }
     },
     {
       "name": "clarik_project_index",
-      "description": "Full file mapping, dependency trees, and architecture layout understanding for codebase navigation."
+      "description": "Build and query a file-to-purpose map for the project. Understands what each file does.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": ["build", "query", "list"],
+            "description": "Action: build the index, query it, or list all mappings"
+          },
+          "query": {
+            "type": "string",
+            "description": "Query string when action is \"query\""
+          },
+          "projectPath": {
+            "type": "string",
+            "description": "Project root path"
+          }
+        },
+        "required": ["action"]
+      }
     },
     {
       "name": "clarik_token_monitor",
-      "description": "Monitors live session token consumption. Warns before model exhaustion limits are triggered."
+      "description": "Estimate token usage for the current session. Warns at 70% context usage.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "currentContent": {
+            "type": "string",
+            "description": "Content to estimate tokens for"
+          }
+        }
+      }
     },
     {
       "name": "clarik_memory_archive",
-      "description": "Automatically archive stale, outdated facts to keep your active memory pool extremely lean and fast."
+      "description": "Move stale memories to archive. Keeps active memory lean and fast.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "maxAge": {
+            "type": "number",
+            "description": "Archive memories older than this many days (default: 30)"
+          },
+          "projectPath": {
+            "type": "string",
+            "description": "Project root path"
+          }
+        }
+      }
     },
     {
       "name": "clarik_conflict_resolver",
-      "description": "Scan, aggregate, and resolve contradicting facts or mismatched constraints stored in memory files."
+      "description": "Surface and resolve conflicting memories. Shows both sides for user decision.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectPath": {
+            "type": "string",
+            "description": "Project root path"
+          }
+        }
+      }
     },
     {
       "name": "clarik_change_scope_guard",
-      "description": "Confirm edits to critical protected files like workflows, migration scripts, or production bundles."
+      "description": "Check if a file is protected before editing. Asks for confirmation, never hard blocks.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "filePath": {
+            "type": "string",
+            "description": "File path to check"
+          },
+          "action": {
+            "type": "string",
+            "description": "What you want to do with the file"
+          }
+        },
+        "required": ["filePath", "action"]
+      }
     },
     {
       "name": "clarik_assumption_checker",
-      "description": "Intercept and notify the developer if Claude begins making assumptions instead of reading local facts."
+      "description": "Flag when Claude is making assumptions instead of asking. Reviews a response for unverified claims.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string",
+            "description": "The assistant response to check for assumptions"
+          },
+          "projectPath": {
+            "type": "string",
+            "description": "Project root path"
+          }
+        },
+        "required": ["response"]
+      }
     },
     {
-      "name": "clarik_session_export",
-      "description": "Exports full learning logs, action timelines, and memory states in clean Markdown, JSON, or CSV."
+      "name": "clarik_diff_reviewer",
+      "description": "Review a code diff with structured explanations of each change.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "diff": {
+            "type": "string",
+            "description": "The diff content to review"
+          },
+          "context": {
+            "type": "string",
+            "description": "Additional context about the change"
+          }
+        },
+        "required": ["diff"]
+      }
+    },
+    {
+      "name": "clarik_hallucination_detector",
+      "description": "Cross-check claims against known project files. Uses targeted file list only, never full repo scan.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "claim": {
+            "type": "string",
+            "description": "The claim or statement to verify"
+          },
+          "relevantFiles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "File paths to check against (targeted, not full repo)"
+          },
+          "projectPath": {
+            "type": "string",
+            "description": "Project root path"
+          }
+        },
+        "required": ["claim", "relevantFiles"]
+      }
+    },
+    {
+      "name": "clarik_decision_timeline",
+      "description": "Track and query architectural decisions with dates, reasons, and affected files.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": ["add", "list", "query"],
+            "description": "Action to perform"
+          },
+          "decision": {
+            "type": "string",
+            "description": "Decision text (for add)"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Reason for the decision (for add)"
+          },
+          "affectedFiles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Files affected by the decision (for add)"
+          },
+          "query": {
+            "type": "string",
+            "description": "Search query (for query)"
+          },
+          "projectPath": {
+            "type": "string",
+            "description": "Project root path"
+          }
+        },
+        "required": ["action"]
+      }
     },
     {
       "name": "clarik_prompt_library",
-      "description": "Access optimized, pre-mapped custom system instructions for specialized codebase workflows."
+      "description": "Save and retrieve reusable prompt templates.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": ["save", "get", "list", "delete"],
+            "description": "Action to perform"
+          },
+          "name": {
+            "type": "string",
+            "description": "Prompt name"
+          },
+          "content": {
+            "type": "string",
+            "description": "Prompt content (for save)"
+          }
+        },
+        "required": ["action"]
+      }
     },
     {
       "name": "clarik_session_search",
-      "description": "Full-text regex search across archived timelines, session transcripts, and learning logs."
+      "description": "Full-text search across past session data.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query"
+          },
+          "projectPath": {
+            "type": "string",
+            "description": "Project root path"
+          }
+        },
+        "required": ["query"]
+      }
     },
     {
-      "name": "clarik_platform_compat",
-      "description": "Translates terminal behaviors, pathing, and OS-specific scripts cleanly between environment layers."
-    },
-    {
-      "name": "clarik_grace_period",
-      "description": "Maintains secure license validation completely locally when offline for up to 30 continuous days."
-    },
-    {
-      "name": "clarik_system_telemetry_wipe",
-      "description": "Aggressively cleanses workspace environments of system tracking indices and cache blobs."
+      "name": "clarik_export_session",
+      "description": "Export session data to ./clarik-exports/ directory. Never exports to ~/Downloads.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "format": {
+            "type": "string",
+            "enum": ["json", "markdown"],
+            "description": "Export format (default: markdown)"
+          },
+          "projectPath": {
+            "type": "string",
+            "description": "Project root path"
+          }
+        }
+      }
     }
   ],
-  "resources": [],
-  "prompts": []
+  "resources": [
+    {
+      "uri": "clarik://memory/active",
+      "name": "clarik-memory",
+      "mimeType": "text/plain",
+      "description": "Active memories for Clarik"
+    }
+  ],
+  "prompts": [
+    {
+      "name": "clarik-session-start",
+      "description": "Load project context and recent memories to start a Clarik-enhanced session."
+    }
+  ]
 }
