@@ -3,9 +3,6 @@
     "name": "Clarik",
     "version": "0.1.0"
   },
-  "authentication": {
-    "required": false
-  },
   "tools": [
     {
       "name": "clarik_memory_learn",
