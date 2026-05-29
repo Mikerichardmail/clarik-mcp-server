@@ -1,0 +1,93 @@
+{
+  "serverInfo": {
+    "name": "Clarik",
+    "version": "0.1.0"
+  },
+  "authentication": {
+    "required": false
+  },
+  "tools": [
+    {
+      "name": "clarik_memory_learn",
+      "description": "Extract facts, record project learnings, and automatically strip verbose model thinking blocks."
+    },
+    {
+      "name": "clarik_memory_recall",
+      "description": "Ranked fact injection matching queries exactly. Keeps token overhead minimal and highly relevant."
+    },
+    {
+      "name": "clarik_memory_list",
+      "description": "Displays categorized memories, reference counters, and relevance breakdown for the current codebase."
+    },
+    {
+      "name": "clarik_memory_edit",
+      "description": "Modify, re-categorize, prune, or expand existing facts in local memory maps."
+    },
+    {
+      "name": "clarik_memory_clear",
+      "description": "Safely clear memories for specific files, domains, categories, or wipe the entire directory clean."
+    },
+    {
+      "name": "clarik_context_trim",
+      "description": "Dynamically ranks, formats, and aggregates workspace file components under predefined budgets."
+    },
+    {
+      "name": "clarik_checkpoint_save",
+      "description": "Take lightweight structured session snapshots, capturing exact working directories and active paths."
+    },
+    {
+      "name": "clarik_checkpoint_resume",
+      "description": "Instantly restore previous checkpoints to bring Claude back to the precise workspace state."
+    },
+    {
+      "name": "clarik_project_index",
+      "description": "Full file mapping, dependency trees, and architecture layout understanding for codebase navigation."
+    },
+    {
+      "name": "clarik_token_monitor",
+      "description": "Monitors live session token consumption. Warns before model exhaustion limits are triggered."
+    },
+    {
+      "name": "clarik_memory_archive",
+      "description": "Automatically archive stale, outdated facts to keep your active memory pool extremely lean and fast."
+    },
+    {
+      "name": "clarik_conflict_resolver",
+      "description": "Scan, aggregate, and resolve contradicting facts or mismatched constraints stored in memory files."
+    },
+    {
+      "name": "clarik_change_scope_guard",
+      "description": "Confirm edits to critical protected files like workflows, migration scripts, or production bundles."
+    },
+    {
+      "name": "clarik_assumption_checker",
+      "description": "Intercept and notify the developer if Claude begins making assumptions instead of reading local facts."
+    },
+    {
+      "name": "clarik_session_export",
+      "description": "Exports full learning logs, action timelines, and memory states in clean Markdown, JSON, or CSV."
+    },
+    {
+      "name": "clarik_prompt_library",
+      "description": "Access optimized, pre-mapped custom system instructions for specialized codebase workflows."
+    },
+    {
+      "name": "clarik_session_search",
+      "description": "Full-text regex search across archived timelines, session transcripts, and learning logs."
+    },
+    {
+      "name": "clarik_platform_compat",
+      "description": "Translates terminal behaviors, pathing, and OS-specific scripts cleanly between environment layers."
+    },
+    {
+      "name": "clarik_grace_period",
+      "description": "Maintains secure license validation completely locally when offline for up to 30 continuous days."
+    },
+    {
+      "name": "clarik_system_telemetry_wipe",
+      "description": "Aggressively cleanses workspace environments of system tracking indices and cache blobs."
+    }
+  ],
+  "resources": [],
+  "prompts": []
+}
