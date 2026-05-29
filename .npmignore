@@ -1,0 +1,18 @@
+# Source code (proprietary)
+src/
+*.ts
+!dist/**
+
+# Dev files
+tsconfig.json
+node_modules/
+.git/
+.gitignore
+
+# Plan and docs (internal only)
+CLARIK_PLAN.md
+.clarik/
+
+# IDE
+.vscode/
+.idea/
